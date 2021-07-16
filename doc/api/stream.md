@@ -586,7 +586,9 @@ the status of the `highWaterMark`.
 
 ##### `writable.writableNeedDrain`
 <!-- YAML
-added: v15.2.0
+added:
+  - v15.2.0
+  - v14.17.0
 -->
 
 * {boolean}
@@ -627,9 +629,8 @@ changes:
 
 The `writable.write()` method writes some data to the stream, and calls the
 supplied `callback` once the data has been fully handled. If an error
-occurs, the `callback` *may or may not* be called with the error as its
-first argument. To reliably detect write errors, add a listener for the
-`'error'` event. The `callback` is called asynchronously and before `'error'` is
+occurs, the `callback` will be called with the error as its
+first argument. The `callback` is called asynchronously and before `'error'` is
 emitted.
 
 The return value is `true` if the internal buffer is less than the
@@ -1506,12 +1507,65 @@ async function print(readable) {
 print(fs.createReadStream('file')).catch(console.error);
 ```
 
-If the loop terminates with a `break` or a `throw`, the stream will be
-destroyed. In other terms, iterating over a stream will consume the stream
+If the loop terminates with a `break`, `return`, or a `throw`, the stream will
+be destroyed. In other terms, iterating over a stream will consume the stream
 fully. The stream will be read in chunks of size equal to the `highWaterMark`
 option. In the code example above, data will be in a single chunk if the file
-has less then 64KB of data because no `highWaterMark` option is provided to
+has less then 64 KB of data because no `highWaterMark` option is provided to
 [`fs.createReadStream()`][].
+
+##### `readable.iterator([options])`
+<!-- YAML
+added: v16.3.0
+-->
+
+> Stability: 1 - Experimental
+
+* `options` {Object}
+  * `destroyOnReturn` {boolean} When set to `false`, calling `return` on the
+    async iterator, or exiting a `for await...of` iteration using a `break`,
+    `return`, or `throw` will not destroy the stream. **Default:** `true`.
+* Returns: {AsyncIterator} to consume the stream.
+
+The iterator created by this method gives users the option to cancel the
+destruction of the stream if the `for await...of` loop is exited by `return`,
+`break`, or `throw`, or if the iterator should destroy the stream if the stream
+emitted an error during iteration.
+
+```js
+const { Readable } = require('stream');
+
+async function printIterator(readable) {
+  for await (const chunk of readable.iterator({ destroyOnReturn: false })) {
+    console.log(chunk); // 1
+    break;
+  }
+
+  console.log(readable.destroyed); // false
+
+  for await (const chunk of readable.iterator({ destroyOnReturn: false })) {
+    console.log(chunk); // Will print 2 and then 3
+  }
+
+  console.log(readable.destroyed); // True, stream was totally consumed
+}
+
+async function printSymbolAsyncIterator(readable) {
+  for await (const chunk of readable) {
+    console.log(chunk); // 1
+    break;
+  }
+
+  console.log(readable.destroyed); // true
+}
+
+async function showBoth() {
+  await printIterator(Readable.from([1, 2, 3]));
+  await printSymbolAsyncIterator(Readable.from([1, 2, 3]));
+}
+
+showBoth();
+```
 
 ### Duplex and transform streams
 
@@ -1578,6 +1632,9 @@ further errors except from `_destroy()` may be emitted as `'error'`.
 <!-- YAML
 added: v10.0.0
 changes:
+  - version: v15.11.0
+    pr-url: https://github.com/nodejs/node/pull/37354
+    description: The `signal` option was added.
   - version: v14.0.0
     pr-url: https://github.com/nodejs/node/pull/32158
     description: The `finished(stream, cb)` will wait for the `'close'` event
@@ -1597,13 +1654,17 @@ changes:
 * `stream` {Stream} A readable and/or writable stream.
 * `options` {Object}
   * `error` {boolean} If set to `false`, then a call to `emit('error', err)` is
-    not treated as finished. **Default**: `true`.
+    not treated as finished. **Default:** `true`.
   * `readable` {boolean} When set to `false`, the callback will be called when
     the stream ends even though the stream might still be readable.
-    **Default**: `true`.
+    **Default:** `true`.
   * `writable` {boolean} When set to `false`, the callback will be called when
     the stream ends even though the stream might still be writable.
-    **Default**: `true`.
+    **Default:** `true`.
+  * `signal` {AbortSignal} allows aborting the wait for the stream finish. The
+    underlying stream will *not* be aborted if the signal is aborted. The
+    callback will get called with an `AbortError`. All registered
+    listeners added by this function will also be removed.
 * `callback` {Function} A callback function that takes an optional error
   argument.
 * Returns: {Function} A cleanup function which removes all registered
@@ -1719,7 +1780,11 @@ pipeline(
 );
 ```
 
-The `pipeline` API provides promise version:
+The `pipeline` API provides a promise version, which can also
+receive an options argument as the last parameter with a
+`signal` {AbortSignal} property. When the signal is aborted,
+`destroy` will be called on the underlying pipeline, with an
+`AbortError`.
 
 ```js
 const { pipeline } = require('stream/promises');
@@ -1734,6 +1799,30 @@ async function run() {
 }
 
 run().catch(console.error);
+```
+
+To use an `AbortSignal`, pass it inside an options object,
+as the last argument:
+
+```js
+const { pipeline } = require('stream/promises');
+
+async function run() {
+  const ac = new AbortController();
+  const options = {
+    signal: ac.signal,
+  };
+
+  setTimeout(() => ac.abort(), 1);
+  await pipeline(
+    fs.createReadStream('archive.tar'),
+    zlib.createGzip(),
+    fs.createWriteStream('archive.tar.gz'),
+    options,
+  );
+}
+
+run().catch(console.error); // AbortError
 ```
 
 The `pipeline` API also supports async generators:
@@ -1802,6 +1891,87 @@ readable.on('data', (chunk) => {
 Calling `Readable.from(string)` or `Readable.from(buffer)` will not have
 the strings or buffers be iterated to match the other streams semantics
 for performance reasons.
+
+### `stream.Readable.fromWeb(readableStream[, options])`
+<!-- YAML
+added: REPLACEME
+-->
+
+> Stability: 1 - Experimental
+
+* `readableStream` {ReadableStream}
+* `options` {Object}
+  * `encoding` {string}
+  * `highWaterMark` {number}
+  * `objectModel` {boolean}
+  * `signal` {AbortSignal}
+* Returns: {stream.Readable}
+
+### `stream.Readable.toWeb(streamReadable)`
+<!-- YAML
+added: REPLACEME
+-->
+
+> Stability: 1 - Experimental
+
+* `streamReadable` {stream.Readable}
+* Returns: {ReadableStream}
+
+### `stream.Writable.fromWeb(writableStream[, options])`
+<!-- YAML
+added: REPLACEME
+-->
+
+> Stability: 1 - Experimental
+
+* `writableStream` {WritableStream}
+* `options` {Object}
+  * `decodeStrings` {boolean}
+  * `highWaterMark` {number}
+  * `objectMode` {boolean}
+  * `signal` {AbortSignal}
+* Returns: {stream.Writable}
+
+### `stream.Writable.toWeb(streamWritable)`
+<!-- YAML
+added: REPLACEME
+-->
+
+> Stability: 1 - Experimental
+
+* `streamWritable` {stream.Writable}
+* Returns: {WritableStream}
+
+### `stream.Duplex.fromWeb(pair[, options])`
+<!-- YAML
+added: REPLACEME
+-->
+
+> Stability: 1 - Experimental
+
+* `pair` {Object}
+  * `readable` {ReadableStream}
+  * `writable` {WritableStream}
+* `options` {Object}
+  * `allowHalfOpen` {boolean}
+  * `decodeStrings` {boolean}
+  * `encoding` {string}
+  * `highWaterMark` {number}
+  * `objectMode` {boolean}
+  * `signal` {AbortSignal}
+* Returns: {stream.Duplex}
+
+### `stream.Duplex.toWeb(streamDuplex)`
+<!-- YAML
+added: REPLACEME
+-->
+
+> Stability: 1 - Experimental
+
+* `streamDuplex` {stream.Duplex}
+* Returns: {Object}
+  * `readable` {ReadableStream}
+  * `writable` {WritableStream}
 
 ### `stream.addAbortSignal(signal, stream)`
 <!-- YAML
@@ -1963,7 +2133,7 @@ changes:
 * `options` {Object}
   * `highWaterMark` {number} Buffer level when
     [`stream.write()`][stream-write] starts returning `false`. **Default:**
-    `16384` (16KB), or `16` for `objectMode` streams.
+    `16384` (16 KB), or `16` for `objectMode` streams.
   * `decodeStrings` {boolean} Whether to encode `string`s passed to
     [`stream.write()`][stream-write] to `Buffer`s (with the encoding
     specified in the [`stream.write()`][stream-write] call) before passing
@@ -2055,7 +2225,6 @@ const myWritable = new Writable({
 });
 // Later, abort the operation closing the stream
 controller.abort();
-
 ```
 #### `writable._construct(callback)`
 <!-- YAML
@@ -2162,8 +2331,14 @@ user programs.
 
 #### `writable._writev(chunks, callback)`
 
-* `chunks` {Object[]} The chunks to be written. Each chunk has following
-  format: `{ chunk: ..., encoding: ... }`.
+* `chunks` {Object[]} The data to be written. The value is an array of {Object}
+  that each represent a discrete chunk of data to write. The properties of
+  these objects are:
+  * `chunk` {Buffer|string} A buffer instance or string containing the data to
+    be written. The `chunk` will be a string if the `Writable` was created with
+    the `decodeStrings` option set to `false` and a string was passed to `write()`.
+  * `encoding` {string} The character encoding of the `chunk`. If `chunk` is
+    a `Buffer`, the `encoding` will be `'buffer'`.
 * `callback` {Function} A callback function (optionally with an error
   argument) to be invoked when processing is complete for the supplied chunks.
 
@@ -2321,7 +2496,7 @@ changes:
 * `options` {Object}
   * `highWaterMark` {number} The maximum [number of bytes][hwm-gotcha] to store
     in the internal buffer before ceasing to read from the underlying resource.
-    **Default:** `16384` (16KB), or `16` for `objectMode` streams.
+    **Default:** `16384` (16 KB), or `16` for `objectMode` streams.
   * `encoding` {string} If specified, then buffers will be decoded to
     strings using the specified encoding. **Default:** `null`.
   * `objectMode` {boolean} Whether this stream should behave
@@ -2468,10 +2643,12 @@ All `Readable` stream implementations must provide an implementation of the
 
 When [`readable._read()`][] is called, if data is available from the resource,
 the implementation should begin pushing that data into the read queue using the
-[`this.push(dataChunk)`][stream-push] method. `_read()` should continue reading
-from the resource and pushing data until `readable.push()` returns `false`. Only
-when `_read()` is called again after it has stopped should it resume pushing
-additional data onto the queue.
+[`this.push(dataChunk)`][stream-push] method. `_read()` will be called again
+after each call to [`this.push(dataChunk)`][stream-push] once the stream is
+ready to accept more data. `_read()` may continue reading from the resource and
+pushing data until `readable.push()` returns `false`. Only when `_read()` is
+called again after it has stopped should it resume pushing additional data into
+the queue.
 
 Once the [`readable._read()`][] method has been called, it will not be called
 again until more data is pushed through the [`readable.push()`][stream-push]
@@ -2719,7 +2896,7 @@ const fs = require('fs');
 
 pipeline(
   fs.createReadStream('object.json')
-    .setEncoding('utf-8'),
+    .setEncoding('utf8'),
   new Transform({
     decodeStrings: false, // Accept string input rather than Buffers
     construct(callback) {
@@ -3196,6 +3373,7 @@ contain multi-byte characters.
 [HTTP requests, on the client]: http.md#http_class_http_clientrequest
 [HTTP responses, on the server]: http.md#http_class_http_serverresponse
 [TCP sockets]: net.md#net_class_net_socket
+[Three states]: #stream_three_states
 [`'data'`]: #stream_event_data
 [`'drain'`]: #stream_event_drain
 [`'end'`]: #stream_event_end
@@ -3217,11 +3395,11 @@ contain multi-byte characters.
 [`readable.push('')`]: #stream_readable_push
 [`readable.setEncoding()`]: #stream_readable_setencoding_encoding
 [`stream.Readable.from()`]: #stream_stream_readable_from_iterable_options
+[`stream.addAbortSignal()`]: #stream_stream_addabortsignal_signal_stream
 [`stream.cork()`]: #stream_writable_cork
 [`stream.finished()`]: #stream_stream_finished_stream_options_callback
 [`stream.pipe()`]: #stream_readable_pipe_destination_options
 [`stream.pipeline()`]: #stream_stream_pipeline_source_transforms_destination_callback
-[`stream.addAbortSignal()`]: #stream_stream_addabortsignal_signal_stream
 [`stream.uncork()`]: #stream_writable_uncork
 [`stream.unpipe()`]: #stream_readable_unpipe_destination
 [`stream.wrap()`]: #stream_readable_wrap_stream
@@ -3257,7 +3435,6 @@ contain multi-byte characters.
 [stream-resume]: #stream_readable_resume
 [stream-uncork]: #stream_writable_uncork
 [stream-write]: #stream_writable_write_chunk_encoding_callback
-[Three states]: #stream_three_states
 [writable-_construct]: #stream_writable_construct_callback
 [writable-_destroy]: #stream_writable_destroy_err_callback
 [writable-destroy]: #stream_writable_destroy_error
