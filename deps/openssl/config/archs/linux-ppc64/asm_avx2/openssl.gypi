@@ -844,6 +844,7 @@
       'openssl/providers/implementations/digests/blake2s_prov.c',
       'openssl/providers/implementations/digests/md5_prov.c',
       'openssl/providers/implementations/digests/md5_sha1_prov.c',
+      'openssl/providers/implementations/digests/null_prov.c',
       'openssl/providers/implementations/digests/sha2_prov.c',
       'openssl/providers/implementations/digests/sha3_prov.c',
       'openssl/providers/implementations/digests/sm3_prov.c',
@@ -957,6 +958,7 @@
       'openssl/providers/implementations/digests/wp_prov.c',
       'openssl/providers/implementations/kdfs/pbkdf1.c',
       'openssl/providers/prov_running.c',
+      'openssl/providers/legacyprov.c',
     ],
     'openssl_sources_linux-ppc64': [
       './config/archs/linux-ppc64/asm_avx2/crypto/aes/aes-ppc.s',
@@ -988,6 +990,7 @@
       './config/archs/linux-ppc64/asm_avx2/crypto/bn/bn-ppc.s',
       './config/archs/linux-ppc64/asm_avx2/crypto/bn/ppc-mont.s',
       './config/archs/linux-ppc64/asm_avx2/crypto/bn/ppc64-mont-fixed.s',
+      './config/archs/linux-ppc64/asm_avx2/providers/legacy.ld',
       './config/archs/linux-ppc64/asm_avx2/providers/fips.ld',
     ],
     'openssl_defines_linux-ppc64': [

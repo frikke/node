@@ -837,6 +837,7 @@
       'openssl/providers/implementations/digests/blake2s_prov.c',
       'openssl/providers/implementations/digests/md5_prov.c',
       'openssl/providers/implementations/digests/md5_sha1_prov.c',
+      'openssl/providers/implementations/digests/null_prov.c',
       'openssl/providers/implementations/digests/sha2_prov.c',
       'openssl/providers/implementations/digests/sha3_prov.c',
       'openssl/providers/implementations/digests/sm3_prov.c',
@@ -949,6 +950,7 @@
       'openssl/providers/implementations/digests/wp_prov.c',
       'openssl/providers/implementations/kdfs/pbkdf1.c',
       'openssl/providers/prov_running.c',
+      'openssl/providers/legacyprov.c',
     ],
     'openssl_sources_linux64-s390x': [
       './config/archs/linux64-s390x/asm/crypto/aes/aes-s390x.S',
@@ -972,6 +974,7 @@
       './config/archs/linux64-s390x/asm/providers/common/der/der_wrap_gen.c',
       './config/archs/linux64-s390x/asm/crypto/bn/s390x-gf2m.s',
       './config/archs/linux64-s390x/asm/crypto/bn/s390x-mont.S',
+      './config/archs/linux64-s390x/asm/providers/legacy.ld',
       './config/archs/linux64-s390x/asm/providers/fips.ld',
     ],
     'openssl_defines_linux64-s390x': [

@@ -844,6 +844,7 @@
       'openssl/providers/implementations/digests/blake2s_prov.c',
       'openssl/providers/implementations/digests/md5_prov.c',
       'openssl/providers/implementations/digests/md5_sha1_prov.c',
+      'openssl/providers/implementations/digests/null_prov.c',
       'openssl/providers/implementations/digests/sha2_prov.c',
       'openssl/providers/implementations/digests/sha3_prov.c',
       'openssl/providers/implementations/digests/sm3_prov.c',
@@ -957,6 +958,7 @@
       'openssl/providers/implementations/digests/wp_prov.c',
       'openssl/providers/implementations/kdfs/pbkdf1.c',
       'openssl/providers/prov_running.c',
+      'openssl/providers/legacyprov.c',
     ],
     'openssl_sources_aix64-gcc-as': [
       './config/archs/aix64-gcc-as/asm_avx2/crypto/aes/aes-ppc.s',
@@ -988,6 +990,7 @@
       './config/archs/aix64-gcc-as/asm_avx2/crypto/bn/bn-ppc.s',
       './config/archs/aix64-gcc-as/asm_avx2/crypto/bn/ppc-mont.s',
       './config/archs/aix64-gcc-as/asm_avx2/crypto/bn/ppc64-mont-fixed.s',
+      './config/archs/aix64-gcc-as/asm_avx2/providers/legacy.ld',
       './config/archs/aix64-gcc-as/asm_avx2/providers/fips.ld',
     ],
     'openssl_defines_aix64-gcc-as': [

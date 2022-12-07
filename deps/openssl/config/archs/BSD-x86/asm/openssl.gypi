@@ -830,6 +830,7 @@
       'openssl/providers/implementations/digests/blake2s_prov.c',
       'openssl/providers/implementations/digests/md5_prov.c',
       'openssl/providers/implementations/digests/md5_sha1_prov.c',
+      'openssl/providers/implementations/digests/null_prov.c',
       'openssl/providers/implementations/digests/sha2_prov.c',
       'openssl/providers/implementations/digests/sha3_prov.c',
       'openssl/providers/implementations/digests/sm3_prov.c',
@@ -940,6 +941,7 @@
       'openssl/providers/implementations/digests/wp_prov.c',
       'openssl/providers/implementations/kdfs/pbkdf1.c',
       'openssl/providers/prov_running.c',
+      'openssl/providers/legacyprov.c',
     ],
     'openssl_sources_BSD-x86': [
       './config/archs/BSD-x86/asm/crypto/aes/aes-586.s',
@@ -980,6 +982,7 @@
       './config/archs/BSD-x86/asm/crypto/des/crypt586.s',
       './config/archs/BSD-x86/asm/crypto/des/des-586.s',
       './config/archs/BSD-x86/asm/crypto/md5/md5-586.s',
+      './config/archs/BSD-x86/asm/providers/legacy.ld',
       './config/archs/BSD-x86/asm/providers/fips.ld',
     ],
     'openssl_defines_BSD-x86': [

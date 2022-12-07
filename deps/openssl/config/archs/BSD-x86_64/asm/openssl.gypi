@@ -835,6 +835,7 @@
       'openssl/providers/implementations/digests/blake2s_prov.c',
       'openssl/providers/implementations/digests/md5_prov.c',
       'openssl/providers/implementations/digests/md5_sha1_prov.c',
+      'openssl/providers/implementations/digests/null_prov.c',
       'openssl/providers/implementations/digests/sha2_prov.c',
       'openssl/providers/implementations/digests/sha3_prov.c',
       'openssl/providers/implementations/digests/sm3_prov.c',
@@ -950,6 +951,7 @@
       'openssl/providers/implementations/digests/wp_prov.c',
       'openssl/providers/implementations/kdfs/pbkdf1.c',
       'openssl/providers/prov_running.c',
+      'openssl/providers/legacyprov.c',
     ],
     'openssl_sources_BSD-x86_64': [
       './config/archs/BSD-x86_64/asm/crypto/aes/aes-x86_64.s',
@@ -998,6 +1000,7 @@
       './config/archs/BSD-x86_64/asm/crypto/bn/x86_64-mont.s',
       './config/archs/BSD-x86_64/asm/crypto/bn/x86_64-mont5.s',
       './config/archs/BSD-x86_64/asm/crypto/md5/md5-x86_64.s',
+      './config/archs/BSD-x86_64/asm/providers/legacy.ld',
       './config/archs/BSD-x86_64/asm/providers/fips.ld',
     ],
     'openssl_defines_BSD-x86_64': [

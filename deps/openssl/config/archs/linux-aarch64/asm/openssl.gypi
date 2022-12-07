@@ -840,6 +840,7 @@
       'openssl/providers/implementations/digests/blake2s_prov.c',
       'openssl/providers/implementations/digests/md5_prov.c',
       'openssl/providers/implementations/digests/md5_sha1_prov.c',
+      'openssl/providers/implementations/digests/null_prov.c',
       'openssl/providers/implementations/digests/sha2_prov.c',
       'openssl/providers/implementations/digests/sha3_prov.c',
       'openssl/providers/implementations/digests/sm3_prov.c',
@@ -953,6 +954,7 @@
       'openssl/providers/implementations/digests/wp_prov.c',
       'openssl/providers/implementations/kdfs/pbkdf1.c',
       'openssl/providers/prov_running.c',
+      'openssl/providers/legacyprov.c',
     ],
     'openssl_sources_linux-aarch64': [
       './config/archs/linux-aarch64/asm/crypto/aes/aesv8-armx.S',
@@ -976,6 +978,7 @@
       './config/archs/linux-aarch64/asm/providers/common/der/der_rsa_gen.c',
       './config/archs/linux-aarch64/asm/providers/common/der/der_wrap_gen.c',
       './config/archs/linux-aarch64/asm/crypto/bn/armv8-mont.S',
+      './config/archs/linux-aarch64/asm/providers/legacy.ld',
       './config/archs/linux-aarch64/asm/providers/fips.ld',
     ],
     'openssl_defines_linux-aarch64': [

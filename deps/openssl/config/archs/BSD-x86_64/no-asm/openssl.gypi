@@ -842,6 +842,7 @@
       'openssl/providers/implementations/digests/blake2s_prov.c',
       'openssl/providers/implementations/digests/md5_prov.c',
       'openssl/providers/implementations/digests/md5_sha1_prov.c',
+      'openssl/providers/implementations/digests/null_prov.c',
       'openssl/providers/implementations/digests/sha2_prov.c',
       'openssl/providers/implementations/digests/sha3_prov.c',
       'openssl/providers/implementations/digests/sm3_prov.c',
@@ -955,6 +956,7 @@
       'openssl/providers/implementations/digests/wp_prov.c',
       'openssl/providers/implementations/kdfs/pbkdf1.c',
       'openssl/providers/prov_running.c',
+      'openssl/providers/legacyprov.c',
     ],
     'openssl_sources_BSD-x86_64': [
       './config/archs/BSD-x86_64/no-asm/providers/common/der/der_sm2_gen.c',
@@ -964,6 +966,7 @@
       './config/archs/BSD-x86_64/no-asm/providers/common/der/der_ecx_gen.c',
       './config/archs/BSD-x86_64/no-asm/providers/common/der/der_rsa_gen.c',
       './config/archs/BSD-x86_64/no-asm/providers/common/der/der_wrap_gen.c',
+      './config/archs/BSD-x86_64/no-asm/providers/legacy.ld',
       './config/archs/BSD-x86_64/no-asm/providers/fips.ld',
     ],
     'openssl_defines_BSD-x86_64': [

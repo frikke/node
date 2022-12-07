@@ -7,14 +7,21 @@
     'conditions': [
       ['OS == "win"', {
         'obj_dir_abs': '<(PRODUCT_DIR_ABS)/obj',
+        'openssl_dir': '<(PRODUCT_DIR_ABS)/obj/lib',
       }],
       ['GENERATOR == "ninja"', {
         'obj_dir_abs': '<(PRODUCT_DIR_ABS)/obj',
+        'modules_dir': '<(PRODUCT_DIR_ABS)/obj/lib/openssl-modules',
+        'openssl_dir': '<(PRODUCT_DIR_ABS)/obj/lib',
       }, {
         'obj_dir_abs%': '<(PRODUCT_DIR_ABS)/obj.target',
+        'modules_dir': '<(PRODUCT_DIR_ABS)/obj.target/deps/openssl/lib/openssl-modules',
+        'openssl_dir': '<(PRODUCT_DIR_ABS)/obj.target/deps/openssl',
       }],
       ['OS=="mac"', {
         'obj_dir_abs%': '<(PRODUCT_DIR_ABS)/obj.target',
+        'modules_dir': '<(PRODUCT_DIR_ABS)/obj.target/deps/openssl/lib/openssl-modules',
+        'openssl_dir': '<(PRODUCT_DIR_ABS)/obj.target/deps/openssl',
       }],
     ],
   },
@@ -29,6 +36,7 @@
         # is able to create a malicious DLL in one of the default search paths.
         'OPENSSL_NO_HW',
         'OPENSSL_API_COMPAT=0x10100001L',
+        'STATIC_LEGACY',
         #'OPENSSL_NO_DEPRECATED',
       ],
       'conditions': [
@@ -48,8 +56,8 @@
         }],
         ['node_shared_openssl=="false"', {
           'defines': [
-	    'MODULESDIR="<(obj_dir_abs)/deps/openssl/lib/openssl-modules"',
-            'OPENSSLDIR="<(obj_dir_abs)/deps/openssl"',
+            'MODULESDIR="<(modules_dir)"',
+            'OPENSSLDIR="<(openssl_dir)"',
           ]
         }],
       ],

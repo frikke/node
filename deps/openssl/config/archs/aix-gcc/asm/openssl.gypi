@@ -843,6 +843,7 @@
       'openssl/providers/implementations/digests/blake2s_prov.c',
       'openssl/providers/implementations/digests/md5_prov.c',
       'openssl/providers/implementations/digests/md5_sha1_prov.c',
+      'openssl/providers/implementations/digests/null_prov.c',
       'openssl/providers/implementations/digests/sha2_prov.c',
       'openssl/providers/implementations/digests/sha3_prov.c',
       'openssl/providers/implementations/digests/sm3_prov.c',
@@ -956,6 +957,7 @@
       'openssl/providers/implementations/digests/wp_prov.c',
       'openssl/providers/implementations/kdfs/pbkdf1.c',
       'openssl/providers/prov_running.c',
+      'openssl/providers/legacyprov.c',
     ],
     'openssl_sources_aix-gcc': [
       './config/archs/aix-gcc/asm/crypto/aes/aes-ppc.s',
@@ -982,6 +984,7 @@
       './config/archs/aix-gcc/asm/providers/common/der/der_wrap_gen.c',
       './config/archs/aix-gcc/asm/crypto/bn/bn-ppc.s',
       './config/archs/aix-gcc/asm/crypto/bn/ppc-mont.s',
+      './config/archs/aix-gcc/asm/providers/legacy.ld',
       './config/archs/aix-gcc/asm/providers/fips.ld',
     ],
     'openssl_defines_aix-gcc': [

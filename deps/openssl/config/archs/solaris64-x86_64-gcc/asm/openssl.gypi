@@ -834,6 +834,7 @@
       'openssl/providers/implementations/digests/blake2s_prov.c',
       'openssl/providers/implementations/digests/md5_prov.c',
       'openssl/providers/implementations/digests/md5_sha1_prov.c',
+      'openssl/providers/implementations/digests/null_prov.c',
       'openssl/providers/implementations/digests/sha2_prov.c',
       'openssl/providers/implementations/digests/sha3_prov.c',
       'openssl/providers/implementations/digests/sm3_prov.c',
@@ -949,6 +950,7 @@
       'openssl/providers/implementations/digests/wp_prov.c',
       'openssl/providers/implementations/kdfs/pbkdf1.c',
       'openssl/providers/prov_running.c',
+      'openssl/providers/legacyprov.c',
     ],
     'openssl_sources_solaris64-x86_64-gcc': [
       './config/archs/solaris64-x86_64-gcc/asm/crypto/aes/aes-x86_64.s',
@@ -997,6 +999,7 @@
       './config/archs/solaris64-x86_64-gcc/asm/crypto/bn/x86_64-mont.s',
       './config/archs/solaris64-x86_64-gcc/asm/crypto/bn/x86_64-mont5.s',
       './config/archs/solaris64-x86_64-gcc/asm/crypto/md5/md5-x86_64.s',
+      './config/archs/solaris64-x86_64-gcc/asm/providers/legacy.ld',
       './config/archs/solaris64-x86_64-gcc/asm/providers/fips.ld',
     ],
     'openssl_defines_solaris64-x86_64-gcc': [
